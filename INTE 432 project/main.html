@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Ordering App</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    height: 50px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin: 0 1em;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    margin-top: 2em;
+}
+
+.auth-links {
+    margin-bottom: 2em;
+}
+
+.auth-links a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 1em;
+    cursor: pointer;
+}
+
+.dashboard {
+    flex: 1;
+    margin: 0 1em;
+}
+
+.dashboard form {
+    margin-bottom: 2em;
+}
+
+.dashboard form label {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.dashboard form textarea {
+    width: 100%;
+    padding: 0.5em;
+    margin-bottom: 1em;
+}
+
+.dashboard form button, .dashboard button {
+    padding: 0.5em 1em;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.items {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.items button {
+    margin-bottom: 1em;
+}
+
+#items-list {
+    margin-top: 1em;
+}
+
+#items-list div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em;
+    border-bottom: 1px solid #ccc;
+}
+
+#items-list div img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+s
+    </style>
+</head>
+<body>
+    <header>
+        <img src="images/logo.jpg" alt="Organization Logo" class="logo">
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="about us.html">About Us</a></li>
+                <li><a href="contact us.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="auth-links">
+            <a href="login.html">Login</a> 
+            <a href="sign up.html">Sign Up</a>
+        </div>
+        <div class="dashboard">
+            <h2>Available Items</h2>
+            <div class="items">
+                <button id="fruits-btn">Fruits</button>
+                <button id="vegetables-btn">Vegetables</button>
+                <input type="text" id="search-box" placeholder="Search items...">
+                <button id="search-btn">Search</button>
+                <div id="items-list"></div>
+            </div>
+            <button id="proceed-to-payment">Proceed to Payment</button>
+            <h2>Feedback</h2>
+            <form id="feedback-form">
+                <label for="feedback">Your Feedback:</label>
+                <textarea id="feedback" name="feedback" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
+<script>
+        const products = [
+            { name: "Garlic", price: "KES 70.00", weight: "400gms", image: "images/garlic.jpg", category: "onions" },
+            { name: "White Onions", price: "KES 185.00", weight: "500gms", image: "images/white_onion.jpg", category: "onions" },
+            { name: "Red Onions", price: "KES 280.00", weight: "1Kg", image: "images/red_onion.jpg", category: "onions" },
+            { name: "Oranges", price: "KES 120.00", weight: "1kg", image: "images/orange.jpg", category: "fruits" },
+            { name: "Apples", price: "KES 270.00", weight: "1kg", image: "images/apple.jpg", category: "fruits" },
+            { name: "Strawberry", price: "KES 350.00", weight: "per packet", image: "images/strawberry.jpg", category: "fruits" },
+            { name: "Avocado", price: "KES 430.00", weight: "1kg", image: "images/avocado.webp", category: "fruits" },
+            { name: "Banana", price: "KES 40.00", weight: "each", image: "images/banana.jpg", category: "fruits" },
+            { name: "Mango", price: "KES 25.00", weight: "each", image: "images/mango.jpg", category: "fruits" },
+            { name: "Dates", price: "KES 550.00", weight: "per packet", image: "images/dates.jpg", category: "fruits" },
+            { name: "Water Melon", price: "KES 400.00", weight: "1kg", image: "images/water_melon.webp", category: "fruits" },
+            { name: "Cherry Tomatoes", price: "KES 200.00", weight: "250gms", image: "images/cherry_tomatoes.jpg", category: "tomatoes" },
+            { name: "Red Tomatoes", price: "KES 150.00", weight: "500gms", image: "images/red_tomatoes.jpg", category: "tomatoes" },
+            { name: "Bell Peppers", price: "KES 180.00", weight: "300gms", image: "images/bell_pepper.jpg", category: "peppers" },
+            { name: "Peppers", price: "KES 120.00", weight: "200gms", image: "images/pepper.jpg", category: "peppers" },
+            { name:  "Kales", price: "KES 20.00", weight:"200gms", image:"images/kales.jpg", category:"vegetables" },
+            { name:  "Spinach", price: "KES 30.00", weight:"200gms", image:"images/spinach.jpg", category:"vegetables" },
+            { name:  "Cabbage", price: "KES 180.00", weight:"200gms", image:"images/cabbage.jpg", category:"vegetables" },
+            { name:  "Managu", price: "KES 20.00", weight:"200gms", image:"images/managu.jpg", category:"vegetables" },
+            { name:  "Terere", price: "KES 20.00", weight:"200gms", image:"images/terere.jpg", category:"vegetables" },
+            { name:  "Broccoli", price: "KES 20.00", weight:"200gms", image:"images/broccoli.jpg", category:"vegetables" },
+        ];
+
+        let cart = [];
+
+        function createProductElement(product) {
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product';
+            productDiv.dataset.category = product.category;
+            productDiv.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.price}</p>
+                <p>${product.weight}</p>
+                <button class="add-to-cart">ADD TO CART</button>
+            `;
+            const addToCartButton = productDiv.querySelector('.add-to-cart');
+            addToCartButton.addEventListener('click', () => addToCart(product));
+            return productDiv;
+        }
+
+        function displayProducts() {
+            const container = document.getElementById('productContainer');
+            products.forEach(product => {
+                container.appendChild(createProductElement(product));
+            });
+        }
+
+        function filterProducts() {
+            const category = document.getElementById('categorySelect').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const products = document.querySelectorAll('.product');
+            products.forEach(product => {
+                const matchesCategory = category === '' || product.dataset.category === category;
+                const matchesSearch = product.querySelector('h3').textContent.toLowerCase().includes(searchQuery);
+                if (matchesCategory && matchesSearch) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        function addToCart(product) {
+            cart.push(product);
+            updateCartLink();
+        }
+
+        function updateCartLink() {
+            const cartLink = document.getElementById('cartLink');
+            cartLink.textContent = `Cart (${cart.length})`;
+            cartLink.href = `cart.html?cart=${encodeURIComponent(JSON.stringify(cart))}`;
+        }
+
+        displayProducts();
+
+        document.getElementById('categorySelect').addEventListener('change', filterProducts);
+        document.getElementById('searchInput').addEventListener('input', filterProducts);
+    </script>

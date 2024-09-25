@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            background-color: #4CAF50;
+            padding: 10px 20px;
+        }
+        .header img {
+            height: 50px;
+            margin-right: 20px;
+        }
+        .header nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .cart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+            padding: 0 20px;
+        }
+        .cart-item-details h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .cart-item-details p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+        }
+        .cart-item-actions button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cart-item-actions button:hover {
+            background-color: #45a049;
+        }
+        .cart-item-actions input {
+            width: 40px;
+            text-align: center;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .cart-summary {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .cart-summary h2 {
+            font-size: 24px;
+            color: #333;
+        }
+        .cart-summary button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .cart-summary button:hover {
+            background-color: #45a049;
+        }
+        .payment-section {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .payment-section h2 {
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            margin-bottom: 10px;
+        }
+        .payment-method label {
+            margin-left: 10px;
+        }
+        .payment-summary button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .payment-summary button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="images/logo.jpg" alt="Logo">
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Register</a>
+        </nav>
+    </header>
+    <div class="cart-container">
+        <div id="cartItems">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        <div class="cart-summary">
+            <h2>Total: <span id="cartTotal">KES 0.00</span></h2>
+            <button onclick="showPaymentSection()">Proceed to Payment</button>
+        </div>
+    </div>
+    <div class="payment-section" id="paymentSection">
+        <h2>Choose Payment Method</h2>
+        <div class="payment-method">
+            <input type="radio" id="card" name="paymentMethod" value="card">
+            <label for="card">Card</label>
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="mpesa" name="paymentMethod" value="mpesa">
+            <label for="mpesa">M-Pesa</label>
+        </div>
+        <div class="payment-method">
+            <input type="radio" id="cod" name="paymentMethod" value="cod">
+            <label for="cod">Cash on Delivery</label>
+        </div>
+        <div class="payment-summary">
+            <h2>Total: <span id="paymentTotal">KES 0.00</span></h2>
+            <button onclick="proceedToPayment()">Confirm and Pay</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function getCartFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cartData = urlParams.get('cart');
+            if (cartData) {
+                cart = JSON.parse(decodeURIComponent(cartData));
+                cart.forEach(product => {
+                    if (!product.quantity) {
+                        product.quantity = 1;
+                    }
+                });
+            }
+        }
+
+        function displayCartItems() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = '';
+            cart.forEach((product, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="cart-item-details">
+                        <h3>${product.name}</h3>
+                        <p>${product.price}</p>
+                        <p>${product.weight}</p>
+                    </div>
+                    <div class="cart-item-actions">
+                        <button onclick="removeFromCart(${index})">Remove</button>
+                        <input type="number" value="${product.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+            });
+            updateCartTotal();
+        }
+
+        function updateCartTotal() {
+            let total = 0;
+            cart.forEach(product => {
+                const price = parseFloat(product.price.replace('KES ', '').replace(',', ''));
+                total += price * product.quantity;
+            });
+            document.getElementById('cartTotal').textContent = `KES ${total.toFixed(2)}`;
+            document.getElementById('paymentTotal').textContent = `KES ${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            displayCartItems();
+        }
+
+        function updateQuantity(index, quantity) {
+            cart[index].quantity = parseInt(quantity);
+            updateCartTotal();
+        }
+
+        function showPaymentSection() {
+            document.querySelector('.cart-container').style.display = 'none';
+            document.getElementById('paymentSection').style.display = 'block';
+        }
+
+        function proceedToPayment() {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            if (selectedMethod) {
+                alert(`Proceeding to payment with ${selectedMethod.value}...`);
+                // Implement your payment logic here
+            } else {
+                alert('Please select a payment method.');
+            }
+        }
+
+        getCartFromUrl();
+        displayCartItems();
+    </script>
+</body>
+</html>
